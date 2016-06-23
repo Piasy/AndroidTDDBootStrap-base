@@ -1,5 +1,6 @@
 package com.github.piasy.base.model.provider;
 
+import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 import com.google.gson.TypeAdapterFactory;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -17,6 +18,7 @@ public abstract class GsonConfig {
 
     public abstract String dateFormatString();
 
+    @Nullable
     public abstract TypeAdapterFactory autoGsonTypeAdapterFactory();
 
     @AutoValue.Builder
@@ -26,7 +28,7 @@ public abstract class GsonConfig {
         public abstract Builder dateFormatString(final String dateFormatString);
 
         public abstract Builder autoGsonTypeAdapterFactory(
-                final TypeAdapterFactory typeAdapterFactory);
+                @Nullable final TypeAdapterFactory typeAdapterFactory);
 
         public abstract GsonConfig build();
     }

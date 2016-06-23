@@ -65,9 +65,12 @@ public class ProviderModule {
     @Singleton
     @Provides
     Gson provideGson(final GsonConfig config) {
-        return new GsonBuilder().registerTypeAdapterFactory(config.autoGsonTypeAdapterFactory())
-                .registerTypeAdapter(ZonedDateTime.class,
-                        new ZonedDateTimeJsonConverter(config.dateTimeFormatter()))
+        final GsonBuilder builder = new GsonBuilder();
+        if (config.autoGsonTypeAdapterFactory() != null) {
+            builder.registerTypeAdapterFactory(config.autoGsonTypeAdapterFactory());
+        }
+        return builder.registerTypeAdapter(ZonedDateTime.class,
+                new ZonedDateTimeJsonConverter(config.dateTimeFormatter()))
                 .setDateFormat(config.dateFormatString())
                 .setPrettyPrinting()
                 .create();

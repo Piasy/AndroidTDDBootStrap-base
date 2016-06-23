@@ -3,6 +3,7 @@ package com.github.piasy.base.model.jsr310;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.squareup.sqldelight.ColumnAdapter;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
@@ -23,7 +24,9 @@ public class ZonedDateTimeDelightAdapter implements ColumnAdapter<ZonedDateTime>
 
     @Override
     public void marshal(final ContentValues values, final String key,
-            @NonNull final ZonedDateTime value) {
-        values.put(key, mDateTimeFormatter.format(value));
+            @Nullable final ZonedDateTime value) {
+        if (value != null) {
+            values.put(key, mDateTimeFormatter.format(value));
+        }
     }
 }
