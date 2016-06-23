@@ -29,10 +29,11 @@ import android.database.Cursor;
 import com.github.piasy.base.test.BaseThreeTenBPTest;
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.chrono.IsoChronology;
@@ -47,14 +48,16 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Piasy{github.com/Piasy} on 15/8/16.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ZonedDateTimeDelightAdapterTest extends BaseThreeTenBPTest {
 
     private static final String DATE_STR = "2015-08-16T13:27:33Z";
 
+    @Rule
+    public MockitoRule mMockitoRule = MockitoJUnit.rule();
+
     @Mock
-    Cursor mCursor;
-    ZonedDateTimeDelightAdapter mAdapter;
+    private Cursor mCursor;
+    private ZonedDateTimeDelightAdapter mAdapter;
     private DateTimeFormatter mDateTimeFormatter;
 
     @Before
