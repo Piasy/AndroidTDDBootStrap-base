@@ -31,6 +31,8 @@ apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'com.squareup.sqldelight'
 apply from: '../AndroidCodeQualityConfig/quality.gradle'
 
+def isTravis = "true".equals(System.getenv("TRAVIS"))
+
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
@@ -68,6 +70,12 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
             outputs.upToDateWhen { false }
             showStandardStreams = true
+        }
+    }
+
+    if (isTravis) {
+        lintOptions {
+            abortOnError false
         }
     }
 }
