@@ -28,7 +28,6 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'com.ofg.uptodate'
 apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'com.squareup.sqldelight'
 apply from: '../AndroidCodeQualityConfig/quality.gradle'
 
 def isTravis = "true".equals(System.getenv("TRAVIS"))
@@ -82,6 +81,7 @@ android {
 
 unMock {
     downloadFrom 'https://oss.sonatype.org/content/groups/public/org/robolectric/android-all/6.0.0_r1-robolectric-0/android-all-6.0.0_r1-robolectric-0.jar'
+    downloadTo "${System.getenv('HOME')}/.gradle/caches/"
 
     keep "android.os.Looper"
     keep "android.content.ContentValues"
@@ -130,6 +130,7 @@ dependencies {
     compile baseDependencies.eventBus
     compile baseDependencies.dagger
     compile baseDependencies.butterKnife
+    compile baseDependencies.sqlDelightRuntime
 
     compile baseDependencies.gson
     compile baseDependencies.okHttp
