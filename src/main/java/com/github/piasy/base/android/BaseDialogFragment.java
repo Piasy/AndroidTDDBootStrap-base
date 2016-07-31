@@ -118,6 +118,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements Trans
         }
     }
 
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbindView();

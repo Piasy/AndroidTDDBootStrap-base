@@ -26,6 +26,7 @@ package com.github.piasy.base.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
@@ -179,7 +180,7 @@ public abstract class BaseFragment extends RxFragment implements TransactionComm
      * If not, should override {@link #bindView(View)} and {@link #unbindView()} to do it manually.
      */
     protected boolean autoBindViews() {
-        return false;
+        return true;
     }
 
     /**
@@ -193,6 +194,7 @@ public abstract class BaseFragment extends RxFragment implements TransactionComm
     /**
      * bind views, should override this method when bind view manually.
      */
+    @CallSuper
     protected void bindView(final View rootView) {
         if (autoBindViews()) {
             mUnBinder = ButterKnife.bind(this, rootView);
