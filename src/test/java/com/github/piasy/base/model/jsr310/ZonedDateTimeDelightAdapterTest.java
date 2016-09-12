@@ -26,7 +26,7 @@ package com.github.piasy.base.model.jsr310;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import com.github.piasy.base.test.BaseThreeTenBPTest;
+import com.github.piasy.test.BaseThreeTenBPTest;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Rule;

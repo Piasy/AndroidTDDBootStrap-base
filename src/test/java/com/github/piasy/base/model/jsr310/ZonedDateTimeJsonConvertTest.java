@@ -25,7 +25,7 @@
 package com.github.piasy.base.model.jsr310;
 
 import com.github.piasy.base.model.provider.GsonProviderExposure;
-import com.github.piasy.base.test.BaseThreeTenBPTest;
+import com.github.piasy.test.BaseThreeTenBPTest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
