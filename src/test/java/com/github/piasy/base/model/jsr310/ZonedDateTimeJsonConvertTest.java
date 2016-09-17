@@ -24,7 +24,6 @@
 
 package com.github.piasy.base.model.jsr310;
 
-import com.github.piasy.base.model.provider.GsonProviderExposure;
 import com.github.piasy.test.BaseThreeTenBPTest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -97,12 +96,11 @@ public class ZonedDateTimeJsonConvertTest extends BaseThreeTenBPTest {
         final String dateStr = "2015-08-16T13:27:33Z";
         final ZonedDateTimeHolder holder = new ZonedDateTimeHolder();
         holder.time = mDateTimeFormatter.parse(dateStr, ZonedDateTime.FROM);
-        final ZonedDateTimeHolder fromJson =
-                GsonProviderExposure.exposeGson().fromJson(json, ZonedDateTimeHolder.class);
+        final ZonedDateTimeHolder fromJson = mGson.fromJson(json, ZonedDateTimeHolder.class);
         Assert.assertEquals(holder.time, fromJson.time);
     }
 
-    static class ZonedDateTimeHolder {
+    private static class ZonedDateTimeHolder {
         ZonedDateTime time;
     }
 }

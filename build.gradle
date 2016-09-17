@@ -122,10 +122,10 @@ dependencies {
     }
     compile baseDependencies.eventBus
     compile baseDependencies.dagger
-    compile (baseDependencies.butterKnife) {
+    compile(baseDependencies.butterKnife) {
         exclude module: 'support-annotations'
     }
-    compile (baseDependencies.sqlDelightRuntime) {
+    compile(baseDependencies.sqlDelightRuntime) {
         exclude module: 'support-annotations'
     }
 
@@ -161,7 +161,7 @@ dependencies {
         exclude module: 'jsr305'
     }
 
-    provided aptDependencies.autoValue  // used for AndroidStudio sync
+    provided aptDependencies.autoValue // used for AndroidStudio sync
     apt aptDependencies.daggerApt
     apt aptDependencies.autoParcelApt
     retrolambdaConfig aptDependencies.retrolambda
