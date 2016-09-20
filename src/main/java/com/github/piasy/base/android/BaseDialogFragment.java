@@ -41,42 +41,45 @@ import android.view.Window;
 import android.view.WindowManager;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.github.piasy.base.utils.RxUtil;
 import com.github.piasy.safelyandroid.activity.StartActivityDelegate;
 import com.github.piasy.safelyandroid.dialogfragment.SupportDialogFragmentDismissDelegate;
 import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegate;
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
-import com.jakewharton.rxbinding.view.RxView;
+import com.github.piasy.yamvp.YaPresenter;
+import com.github.piasy.yamvp.YaView;
+import com.github.piasy.yamvp.dagger2.BaseComponent;
+import com.github.piasy.yamvp.dagger2.HasComponent;
 import com.yatatsu.autobundle.AutoBundle;
-import java.util.concurrent.TimeUnit;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by piasy on 15/5/4.
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public abstract class BaseDialogFragment extends DialogFragment implements TransactionCommitter {
+public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter<V>, C extends
+        BaseComponent<V, P>> extends DialogFragment implements TransactionCommitter {
 
     private static final float DEFAULT_DIM_AMOUNT = 0.2F;
 
-    private static final int WINDOW_DURATION = 1;
+    protected P mPresenter;
+
     private final SupportDialogFragmentDismissDelegate mSupportDialogFragmentDismissDelegate =
             new SupportDialogFragmentDismissDelegate();
     private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate =
             new SupportFragmentTransactionDelegate();
-    private CompositeSubscription mCompositeSubscription;
     private Unbinder mUnBinder;
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        // inject argument first
         if (hasArgs()) {
             AutoBundle.bind(this);
         }
+        final C component = ((HasComponent<C>) getActivity()).getComponent();
+        mPresenter = component.presenter();
+        injectDependencies(component);
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @NonNull
@@ -118,13 +121,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements Trans
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbindView();
-        unSubscribeAll();
-    }
-
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
@@ -155,6 +151,12 @@ public abstract class BaseDialogFragment extends DialogFragment implements Trans
         mSupportFragmentTransactionDelegate.onResumed();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbindView();
+    }
+
     protected final boolean startActivitySafely(final Intent intent) {
         return StartActivityDelegate.startActivitySafely(this, intent);
     }
@@ -170,32 +172,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements Trans
     @Override
     public boolean isCommitterResumed() {
         return isResumed();
-    }
-
-    protected void addSubscribe(final Subscription subscription) {
-        if (mCompositeSubscription == null || mCompositeSubscription.isUnsubscribed()) {
-            // recreate mCompositeSubscription
-            mCompositeSubscription = new CompositeSubscription();
-        }
-        mCompositeSubscription.add(subscription);
-    }
-
-    protected void listenOnClickRxy(final View view, final Action1<Void> action) {
-        listenOnClickRxy(view, WINDOW_DURATION, action);
-    }
-
-    protected void listenOnClickRxy(final View view, final int seconds,
-            final Action1<Void> action) {
-        addSubscribe(RxView.clicks(view)
-                .throttleFirst(seconds, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(action, RxUtil.OnErrorLogger));
-    }
-
-    protected void unSubscribeAll() {
-        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
-            mCompositeSubscription.unsubscribe();
-        }
     }
 
     @LayoutRes
@@ -269,4 +245,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements Trans
             mUnBinder.unbind();
         }
     }
+
+    /**
+     * inject dependencies.
+     * Normally implementation should be {@code component.inject(this)}
+     */
+    protected abstract void injectDependencies(C component);
 }

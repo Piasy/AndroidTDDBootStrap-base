@@ -25,6 +25,7 @@
 package com.github.piasy.base.di;
 
 import android.support.v7.app.AppCompatActivity;
+import com.github.piasy.yamvp.dagger2.ActivityScope;
 import dagger.Module;
 import dagger.Provides;
 

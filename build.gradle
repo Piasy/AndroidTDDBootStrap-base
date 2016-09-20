@@ -100,8 +100,14 @@ dependencies {
 
     compile baseDependencies.javaxAnnotation
 
-    compile(baseDependencies.mvp) {
+    compile(baseDependencies.yaMvpDagger2) {
+        exclude module: 'support-fragment'
         exclude module: 'appcompat-v7'
+        exclude module: 'dagger'
+    }
+    compile(baseDependencies.yaMvpRx) {
+        exclude module: 'rxjava'
+        exclude module: 'jsr305'
         exclude module: 'support-annotations'
     }
     compile baseDependencies.rxJava
@@ -111,12 +117,6 @@ dependencies {
     compile(baseDependencies.rxBindingAppCompatV7) {
         exclude module: 'rxjava'
         exclude module: 'rxandroid'
-        exclude module: 'appcompat-v7'
-        exclude module: 'support-annotations'
-    }
-    compile(baseDependencies.rxLifeCycleComponent) {
-        exclude module: 'rxjava'
-        exclude module: 'rxbinding'
         exclude module: 'appcompat-v7'
         exclude module: 'support-annotations'
     }

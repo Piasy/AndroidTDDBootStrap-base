@@ -32,7 +32,10 @@ import com.github.piasy.base.di.ActivityModule;
 import com.github.piasy.safelyandroid.activity.StartActivityDelegate;
 import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegate;
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+import com.github.piasy.yamvp.YaPresenter;
+import com.github.piasy.yamvp.YaView;
+import com.github.piasy.yamvp.dagger2.BaseComponent;
+import com.github.piasy.yamvp.dagger2.YaMvpDiActivity;
 import com.yatatsu.autobundle.AutoBundle;
 import onactivityresult.ActivityResult;
 
@@ -41,7 +44,8 @@ import onactivityresult.ActivityResult;
  *
  * Base Activity class.
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements TransactionCommitter {
+public abstract class BaseActivity<V extends YaView, P extends YaPresenter<V>, C extends
+        BaseComponent<V, P>> extends YaMvpDiActivity<V, P, C> implements TransactionCommitter {
 
     private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate =
             new SupportFragmentTransactionDelegate();
@@ -49,8 +53,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Transa
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        initializeInjector();
-        super.onCreate(savedInstanceState);
+        // inject argument first
         if (hasArgs()) {
             if (savedInstanceState == null) {
                 AutoBundle.bind(this);
@@ -58,6 +61,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Transa
                 AutoBundle.bind(this, savedInstanceState);
             }
         }
+        super.onCreate(savedInstanceState);
         mIsResumed = true;
     }
 
@@ -106,11 +110,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Transa
     protected boolean hasArgs() {
         return false;
     }
-
-    /**
-     * Initialize dependency injector.
-     */
-    protected abstract void initializeInjector();
 
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
