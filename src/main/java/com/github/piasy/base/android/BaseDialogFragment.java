@@ -62,19 +62,17 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
 
     protected P mPresenter;
 
-    private final SupportDialogFragmentDismissDelegate mSupportDialogFragmentDismissDelegate =
-            new SupportDialogFragmentDismissDelegate();
-    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate =
-            new SupportFragmentTransactionDelegate();
+    private final SupportDialogFragmentDismissDelegate mSupportDialogFragmentDismissDelegate
+            = new SupportDialogFragmentDismissDelegate();
+    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate
+            = new SupportFragmentTransactionDelegate();
     private Unbinder mUnBinder;
 
     @SuppressWarnings("unchecked")
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (hasArgs()) {
-            AutoBundle.bind(this);
-        }
+        AutoBundle.bind(this);
         final C component = ((HasComponent<C>) getActivity()).getComponent();
         mPresenter = component.presenter();
         injectDependencies(component);
@@ -195,13 +193,6 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
 
     protected boolean isCanceledOnBackPressed() {
         return true;
-    }
-
-    /**
-     * When use AutoBundle to inject arguments, should override this and return {@code true}.
-     */
-    protected boolean hasArgs() {
-        return false;
     }
 
     /**

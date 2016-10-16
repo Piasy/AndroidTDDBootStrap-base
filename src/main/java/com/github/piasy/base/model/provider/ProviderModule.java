@@ -113,8 +113,8 @@ public class ProviderModule {
     @Singleton
     @Provides
     BriteDatabase provideBriteDb(final BriteDbConfig config) {
-        final BriteDatabase briteDb =
-                SqlBrite.create().wrapDatabaseHelper(config.sqliteOpenHelper(), Schedulers.io());
+        final BriteDatabase briteDb = SqlBrite.create()
+                .wrapDatabaseHelper(config.sqliteOpenHelper(), Schedulers.io());
         briteDb.setLoggingEnabled(config.enableLogging());
         return briteDb;
     }

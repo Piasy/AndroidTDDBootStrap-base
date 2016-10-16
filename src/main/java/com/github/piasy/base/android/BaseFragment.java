@@ -53,16 +53,14 @@ import onactivityresult.ActivityResult;
 public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C extends
         BaseComponent<V, P>> extends YaMvpDiFragment<V, P, C> implements TransactionCommitter {
 
-    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate =
-            new SupportFragmentTransactionDelegate();
+    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate
+            = new SupportFragmentTransactionDelegate();
     private Unbinder mUnBinder;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (hasArgs()) {
-            AutoBundle.bind(this);
-        }
+        AutoBundle.bind(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -134,13 +132,6 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
      * override and return {@code true} to enable option menu.
      */
     protected boolean shouldHaveOptionsMenu() {
-        return false;
-    }
-
-    /**
-     * When use AutoBundle to inject arguments, should override this and return {@code true}.
-     */
-    protected boolean hasArgs() {
         return false;
     }
 

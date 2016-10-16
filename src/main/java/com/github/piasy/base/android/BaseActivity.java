@@ -47,19 +47,17 @@ import onactivityresult.ActivityResult;
 public abstract class BaseActivity<V extends YaView, P extends YaPresenter<V>, C extends
         BaseComponent<V, P>> extends YaMvpDiActivity<V, P, C> implements TransactionCommitter {
 
-    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate =
-            new SupportFragmentTransactionDelegate();
+    private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate
+            = new SupportFragmentTransactionDelegate();
     private volatile boolean mIsResumed;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (hasArgs()) {
-            if (savedInstanceState == null) {
-                AutoBundle.bind(this);
-            } else {
-                AutoBundle.bind(this, savedInstanceState);
-            }
+        if (savedInstanceState == null) {
+            AutoBundle.bind(this);
+        } else {
+            AutoBundle.bind(this, savedInstanceState);
         }
         super.onCreate(savedInstanceState);
         mIsResumed = true;
@@ -101,13 +99,6 @@ public abstract class BaseActivity<V extends YaView, P extends YaPresenter<V>, C
     }
 
     protected boolean handleActivityResult() {
-        return false;
-    }
-
-    /**
-     * When use AutoBundle to inject arguments, should override this and return {@code true}.
-     */
-    protected boolean hasArgs() {
         return false;
     }
 
