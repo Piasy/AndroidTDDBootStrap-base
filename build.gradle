@@ -45,6 +45,8 @@ android {
         targetSdkVersion rootProject.ext.androidTargetSdkVersion
         versionCode rootProject.ext.releaseVersionCode
         versionName rootProject.ext.releaseVersionName
+
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     buildTypes {
