@@ -24,11 +24,12 @@
 
 package com.github.piasy.base.model.jsr310;
 
-import com.github.piasy.test.BaseThreeTenBPTest;
+import com.github.piasy.test.rules.ThreeTenBPRule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -41,14 +42,16 @@ import org.threeten.bp.temporal.ChronoField;
 /**
  * Created by Piasy{github.com/Piasy} on 15/8/16.
  */
-public class ZonedDateTimeJsonConvertTest extends BaseThreeTenBPTest {
+public class ZonedDateTimeJsonConvertTest {
+
+    @Rule
+    public ThreeTenBPRule mThreeTenBPRule = ThreeTenBPRule.junitTest();
 
     private DateTimeFormatter mDateTimeFormatter;
     private Gson mGson;
 
     @Before
     public void setUp() {
-        initThreeTenBP();
         mDateTimeFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive()
                 .append(DateTimeFormatter.ISO_LOCAL_DATE)
                 .appendLiteral('T')

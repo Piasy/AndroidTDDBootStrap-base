@@ -26,7 +26,7 @@ package com.github.piasy.base.model.jsr310;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import com.github.piasy.test.BaseThreeTenBPTest;
+import com.github.piasy.test.rules.ThreeTenBPRule;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,10 +48,12 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Piasy{github.com/Piasy} on 15/8/16.
  */
-public class ZonedDateTimeDelightAdapterTest extends BaseThreeTenBPTest {
+public class ZonedDateTimeDelightAdapterTest {
 
     private static final String DATE_STR = "2015-08-16T13:27:33Z";
 
+    @Rule
+    public ThreeTenBPRule mThreeTenBPRule = ThreeTenBPRule.junitTest();
     @Rule
     public MockitoRule mMockitoRule = MockitoJUnit.rule();
 
@@ -62,7 +64,6 @@ public class ZonedDateTimeDelightAdapterTest extends BaseThreeTenBPTest {
 
     @Before
     public void setUp() {
-        initThreeTenBP();
         mDateTimeFormatter = new DateTimeFormatterBuilder().parseCaseInsensitive()
                 .append(DateTimeFormatter.ISO_LOCAL_DATE)
                 .appendLiteral('T')
