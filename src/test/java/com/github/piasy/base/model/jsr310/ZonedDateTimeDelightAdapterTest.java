@@ -85,12 +85,12 @@ public class ZonedDateTimeDelightAdapterTest {
     @Test
     public void testMapMarshal() {
         ZonedDateTime parsed = mDateTimeFormatter.parse(DATE_STR, ZonedDateTime.FROM);
-        ZonedDateTime mapped = mAdapter.map(mCursor, 0);
+        ZonedDateTime mapped = mAdapter.decode(mCursor.getString(0));
         Assert.assertEquals(parsed, mapped);
 
         ContentValues values = new ContentValues();
         String key = "date";
-        mAdapter.marshal(values, key, parsed);
+        values.put(key, mAdapter.encode(parsed));
         Assert.assertEquals(DATE_STR, values.getAsString(key));
     }
 }
