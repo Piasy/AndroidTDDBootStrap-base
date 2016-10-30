@@ -28,21 +28,21 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.github.piasy.base.model.jsr310.ZonedDateTimeJsonConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.moczul.ok2curl.CurlInterceptor;
 import com.moczul.ok2curl.logger.Loggable;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.schedulers.Schedulers;
 import javax.inject.Singleton;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.greenrobot.eventbus.EventBus;
 import org.threeten.bp.ZonedDateTime;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -84,7 +84,7 @@ public class ProviderModule {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(
-                        RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                        RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build();
     }
 
@@ -113,8 +113,16 @@ public class ProviderModule {
     @Singleton
     @Provides
     BriteDatabase provideBriteDb(final BriteDbConfig config) {
-        final BriteDatabase briteDb = SqlBrite.create()
-                .wrapDatabaseHelper(config.sqliteOpenHelper(), Schedulers.io());
+        final SqlBrite sqlBrite = new SqlBrite.Builder()
+                .logger(new SqlBrite.Logger() {
+                    @Override
+                    public void log(final String message) {
+                        Timber.d(message);
+                    }
+                })
+                .build();
+        final BriteDatabase briteDb = sqlBrite
+                .wrapDatabaseHelper(config.sqliteOpenHelper(), rx.schedulers.Schedulers.io());
         briteDb.setLoggingEnabled(config.enableLogging());
         return briteDb;
     }

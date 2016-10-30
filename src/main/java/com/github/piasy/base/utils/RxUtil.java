@@ -24,7 +24,7 @@
 
 package com.github.piasy.base.utils;
 
-import rx.functions.Action1;
+import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 /**
@@ -33,15 +33,7 @@ import timber.log.Timber;
 // CHECKSTYLE:OFF
 public final class RxUtil {
 
-    /**
-     * Log error, used for {@link rx.Observable#subscribe()}
-     */
-    public static final Action1<Throwable> OnErrorLogger = new Action1<Throwable>() {
-        @Override
-        public void call(final Throwable throwable) {
-            Timber.e(throwable, "OnErrorLogger");
-        }
-    };
+    public static final Consumer<Throwable> OnErrorLogger = t -> Timber.e(t, "OnErrorLogger");
 
     private RxUtil() {
         // no instance

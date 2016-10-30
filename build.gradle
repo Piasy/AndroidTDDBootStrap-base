@@ -35,11 +35,6 @@ android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     defaultConfig {
         minSdkVersion rootProject.ext.androidMinSdkVersion
         targetSdkVersion rootProject.ext.androidTargetSdkVersion
@@ -56,8 +51,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
@@ -101,6 +96,12 @@ dependencies {
 
     compile baseDependencies.javaxAnnotation
 
+    compile baseDependencies.rxJava2
+    compile(baseDependencies.rxAndroid2) {
+        exclude module: 'rxjava2'
+    }
+    compile baseDependencies.rxJava2Interop
+
     compile(baseDependencies.yaMvpDagger2) {
         exclude module: 'support-fragment'
         exclude module: 'appcompat-v7'
@@ -108,9 +109,12 @@ dependencies {
     }
     compile(baseDependencies.yaMvpRx) {
         exclude module: 'rxjava'
+        exclude module: 'rxjava2'
         exclude module: 'jsr305'
         exclude module: 'support-annotations'
     }
+
+    // this should be removed after belows update
     compile baseDependencies.rxJava
     compile(baseDependencies.rxAndroid) {
         exclude module: 'rxjava'
@@ -138,8 +142,8 @@ dependencies {
     compile(baseDependencies.retrofitGsonConverter) {
         exclude module: 'gson'
     }
-    compile(baseDependencies.retrofitRxJavaAdapter) {
-        exclude module: 'rxjava'
+    compile(baseDependencies.retrofitRxJava2Adapter) {
+        exclude module: 'rxjava2'
     }
     compile(baseDependencies.sqlBrite) {
         exclude module: 'support-annotations'
