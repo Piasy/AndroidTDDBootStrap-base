@@ -94,11 +94,17 @@ dependencies {
         exclude module: 'appcompat-v7'
     }
 
+    compile baseDependencies.recyclerViewV7
+    compile(baseDependencies.mugen) {
+        exclude module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
     compile baseDependencies.javaxAnnotation
 
     compile baseDependencies.rxJava2
     compile(baseDependencies.rxAndroid2) {
-        exclude module: 'rxjava2'
+        exclude module: 'rxjava'
     }
     compile baseDependencies.rxJava2Interop
 
@@ -109,7 +115,6 @@ dependencies {
     }
     compile(baseDependencies.yaMvpRx) {
         exclude module: 'rxjava'
-        exclude module: 'rxjava2'
         exclude module: 'jsr305'
         exclude module: 'support-annotations'
     }
@@ -143,7 +148,7 @@ dependencies {
         exclude module: 'gson'
     }
     compile(baseDependencies.retrofitRxJava2Adapter) {
-        exclude module: 'rxjava2'
+        exclude module: 'rxjava'
     }
     compile(baseDependencies.sqlBrite) {
         exclude module: 'support-annotations'

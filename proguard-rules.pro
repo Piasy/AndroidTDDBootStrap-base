@@ -124,10 +124,3 @@
 -keepclasseswithmembernames class * {
     @com.yatatsu.autobundle.AutoBundleField <fields>;
 }
-
-
-# AutoParcel
--keep class **AutoValue_*$1 { }
--keepclassmembers class * implements android.os.Parcelable {
-    static ** CREATOR;
-}
