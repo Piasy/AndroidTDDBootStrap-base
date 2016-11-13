@@ -50,6 +50,8 @@ import onactivityresult.ActivityResult;
  *
  * Base fragment class.
  */
+
+@SuppressWarnings("unused")
 public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C extends
         BaseComponent<V, P>> extends YaMvpDiFragment<V, P, C> implements TransactionCommitter {
 
@@ -60,8 +62,38 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        AutoBundle.bind(this);
+        if (savedInstanceState == null) {
+            AutoBundle.bind(this);
+        } else {
+            AutoBundle.bind(this, savedInstanceState);
+        }
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean isCommitterResumed() {
+        return isResumed();
+    }
+
+    protected final boolean startActivitySafely(final Intent intent) {
+        return StartActivityDelegate.startActivitySafely(this, intent);
+    }
+
+    protected final boolean startActivityForResultSafely(final Intent intent, final int code) {
+        return StartActivityDelegate.startActivityForResultSafely(this, intent, code);
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ActivityResult.onResult(requestCode, resultCode, data).into(this);
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
+        setHasOptionsMenu(shouldHaveOptionsMenu());
+        return inflater.inflate(getLayoutRes(), container, false);
     }
 
     /**
@@ -90,32 +122,6 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
         unbindView();
     }
 
-    @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-            final Bundle savedInstanceState) {
-        setHasOptionsMenu(shouldHaveOptionsMenu());
-        return inflater.inflate(getLayoutRes(), container, false);
-    }
-
-    @Override
-    public boolean isCommitterResumed() {
-        return isResumed();
-    }
-
-    protected final boolean startActivitySafely(final Intent intent) {
-        return StartActivityDelegate.startActivitySafely(this, intent);
-    }
-
-    protected final boolean startActivityForResultSafely(final Intent intent, final int code) {
-        return StartActivityDelegate.startActivityForResultSafely(this, intent, code);
-    }
-
-    @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ActivityResult.onResult(requestCode, resultCode, data).into(this);
-    }
-
     protected boolean safeCommit(@NonNull final FragmentTransaction transaction) {
         return mSupportFragmentTransactionDelegate.safeCommit(this, transaction);
     }
@@ -136,14 +142,6 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
     }
 
     /**
-     * When use ButterKnife to auto bind views, should override this and return {@code true}.
-     * If not, should override {@link #bindView(View)} and {@link #unbindView()} to do it manually.
-     */
-    protected boolean autoBindViews() {
-        return true;
-    }
-
-    /**
      * init necessary fields.
      */
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
@@ -156,9 +154,7 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
      */
     @CallSuper
     protected void bindView(final View rootView) {
-        if (autoBindViews()) {
-            mUnBinder = ButterKnife.bind(this, rootView);
-        }
+        mUnBinder = ButterKnife.bind(this, rootView);
     }
 
     /**
@@ -172,9 +168,8 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
     /**
      * unbind views, should override this method when unbind view manually.
      */
+    @CallSuper
     protected void unbindView() {
-        if (autoBindViews() && mUnBinder != null) {
-            mUnBinder.unbind();
-        }
+        mUnBinder.unbind();
     }
 }

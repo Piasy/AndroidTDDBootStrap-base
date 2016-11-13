@@ -28,11 +28,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +56,7 @@ import com.yatatsu.autobundle.AutoBundle;
 /**
  * Created by piasy on 15/5/4.
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "unused" })
 public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter<V>, C extends
         BaseComponent<V, P>> extends DialogFragment implements TransactionCommitter {
 
@@ -72,7 +74,11 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        AutoBundle.bind(this);
+        if (savedInstanceState == null) {
+            AutoBundle.bind(this);
+        } else {
+            AutoBundle.bind(this, savedInstanceState);
+        }
         final C component = ((HasComponent<C>) getActivity()).getComponent();
         mPresenter = component.presenter();
         injectDependencies(component);
@@ -98,32 +104,43 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
         super.onStart();
         // Less dimmed background; see http://stackoverflow.com/q/13822842/56285
         final Window window = getDialog().getWindow();
-        final WindowManager.LayoutParams params = window.getAttributes();
-        params.dimAmount = getDimAmount(); // dim only a little bit
-        window.setAttributes(params);
+        if (window != null) {
+            final WindowManager.LayoutParams params = window.getAttributes();
+            params.dimAmount = getDimAmount(); // dim only a little bit
+            window.setAttributes(params);
 
-        window.setLayout(getWidth(), getHeight());
-        window.setGravity(getGravity());
+            window.setLayout(getWidth(), getHeight());
+            window.setGravity(getGravity());
 
-        // Transparent background; see http://stackoverflow.com/q/15007272/56285
-        // (Needed to make dialog's alpha shadow look good)
-        window.setBackgroundDrawableResource(android.R.color.transparent);
+            // Transparent background; see http://stackoverflow.com/q/15007272/56285
+            // (Needed to make dialog's alpha shadow look good)
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         final Resources res = getResources();
         final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
         if (titleDividerId > 0) {
             final View titleDivider = getDialog().findViewById(titleDividerId);
             if (titleDivider != null) {
-                titleDivider.setBackgroundColor(res.getColor(android.R.color.transparent));
+                titleDivider.setBackgroundColor(
+                        ContextCompat.getColor(getContext(), android.R.color.transparent));
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbindView();
     }
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
             @Nullable final Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        if (getDialog().getWindow() != null) {
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
         getDialog().setCanceledOnTouchOutside(isCanceledOnTouchOutside());
         return inflater.inflate(getLayoutRes(), container, false);
     }
@@ -147,12 +164,6 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
         super.onResume();
         mSupportDialogFragmentDismissDelegate.onResumed(this);
         mSupportFragmentTransactionDelegate.onResumed();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbindView();
     }
 
     protected final boolean startActivitySafely(final Intent intent) {
@@ -196,14 +207,6 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     }
 
     /**
-     * When use ButterKnife to auto bind views, should override this and return {@code true}.
-     * If not, should override {@link #bindView(View)} and {@link #unbindView()} to do it manually.
-     */
-    protected boolean autoBindViews() {
-        return false;
-    }
-
-    /**
      * init necessary fields.
      */
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
@@ -214,10 +217,9 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     /**
      * bind views, should override this method when bind view manually.
      */
+    @CallSuper
     protected void bindView(final View rootView) {
-        if (autoBindViews()) {
-            mUnBinder = ButterKnife.bind(this, rootView);
-        }
+        mUnBinder = ButterKnife.bind(this, rootView);
     }
 
     /**
@@ -231,10 +233,9 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     /**
      * unbind views, should override this method when unbind view manually.
      */
+    @CallSuper
     protected void unbindView() {
-        if (autoBindViews() && mUnBinder != null) {
-            mUnBinder.unbind();
-        }
+        mUnBinder.unbind();
     }
 
     /**
