@@ -30,13 +30,13 @@ import timber.log.Timber;
 /**
  * Created by Piasy{github.com/Piasy} on 16/2/26.
  */
-// CHECKSTYLE:OFF
 public final class RxUtil {
 
+    // CHECKSTYLE:OFF
     public static final Consumer<Throwable> OnErrorLogger = t -> Timber.e(t, "OnErrorLogger");
+    // CHECKSTYLE:ON
 
     private RxUtil() {
         // no instance
     }
 }
-// CHECKSTYLE:ON

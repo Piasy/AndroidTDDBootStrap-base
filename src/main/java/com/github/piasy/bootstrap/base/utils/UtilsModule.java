@@ -24,8 +24,6 @@
 
 package com.github.piasy.bootstrap.base.utils;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -38,28 +36,6 @@ import javax.inject.Singleton;
 @Module
 public class UtilsModule {
 
-    private final Context mContext;
-
-    /**
-     * Create instance with the {@link Context} object.
-     *
-     * @param context the {@link Context} object.
-     */
-    public UtilsModule(@NonNull final Context context) {
-        mContext = context;
-    }
-
-    /**
-     * Provide {@link ScreenUtil} with the given context.
-     *
-     * @return the provided {@link ScreenUtil}
-     */
-    @Singleton
-    @Provides
-    ScreenUtil provideScreenUtil() {
-        return new ScreenUtil(mContext);
-    }
-
     /**
      * Provide {@link ToastUtil} with the given context.
      *
@@ -67,7 +43,7 @@ public class UtilsModule {
      */
     @Singleton
     @Provides
-    ToastUtil provideToastUtil() {
-        return new ToastUtilImpl(mContext);
+    ToastUtil provideToastUtil(final ToastUtilImpl toastUtil) {
+        return toastUtil;
     }
 }

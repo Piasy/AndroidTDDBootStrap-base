@@ -27,13 +27,16 @@ package com.github.piasy.bootstrap.base.utils;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by Piasy{github.com/Piasy} on 15/8/9.
  *
  * Implementation of {@link ToastUtil}, using the Android framework {@link Toast}.
  */
-public class ToastUtilImpl implements ToastUtil {
+@Singleton
+class ToastUtilImpl implements ToastUtil {
 
     private final Context mContext;
 
@@ -42,27 +45,28 @@ public class ToastUtilImpl implements ToastUtil {
      *
      * @param context the app {@link Context}.
      */
-    public ToastUtilImpl(final Context context) {
+    @Inject
+    ToastUtilImpl(final Context context) {
         mContext = context;
     }
 
     @Override
-    public void makeToast(final String content) {
+    public void toast(final String content) {
         Toast.makeText(mContext, content, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void makeToast(@StringRes final int contentResId) {
+    public void toast(@StringRes final int contentResId) {
         Toast.makeText(mContext, contentResId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void makeLongToast(final String content) {
+    public void longToast(final String content) {
         Toast.makeText(mContext, content, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void makeLongToast(@StringRes final int contentResId) {
+    public void longToast(@StringRes final int contentResId) {
         Toast.makeText(mContext, contentResId, Toast.LENGTH_LONG).show();
     }
 }

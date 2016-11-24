@@ -29,12 +29,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by Piasy{github.com/Piasy} on 2015/4/17.
  *
  * Screen related utility class.
  */
+
+@Singleton
 public class ScreenUtil {
     private final Context mContext;
 
@@ -43,7 +47,8 @@ public class ScreenUtil {
      *
      * @param context the given app {@link Context}.
      */
-    public ScreenUtil(@NonNull final Context context) {
+    @Inject
+    ScreenUtil(@NonNull final Context context) {
         mContext = context;
     }
 

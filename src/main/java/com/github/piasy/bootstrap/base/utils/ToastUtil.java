@@ -41,26 +41,26 @@ public interface ToastUtil {
      *
      * @param content the content to be toasted.
      */
-    void makeToast(final String content);
+    void toast(final String content);
 
     /**
      * Make toast with string resource id.
      *
      * @param contentResId the content string resource id.
      */
-    void makeToast(@StringRes final int contentResId);
+    void toast(@StringRes final int contentResId);
 
     /**
      * Make toast with content string.
      *
      * @param content the content to be toasted.
      */
-    void makeLongToast(final String content);
+    void longToast(final String content);
 
     /**
      * Make toast with string resource id.
      *
      * @param contentResId the content string resource id.
      */
-    void makeLongToast(@StringRes final int contentResId);
+    void longToast(@StringRes final int contentResId);
 }
