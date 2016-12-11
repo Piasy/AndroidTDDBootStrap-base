@@ -32,9 +32,6 @@ import com.github.piasy.bootstrap.base.di.ActivityModule;
 import com.github.piasy.safelyandroid.activity.StartActivityDelegate;
 import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegate;
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
-import com.github.piasy.yamvp.YaPresenter;
-import com.github.piasy.yamvp.YaView;
-import com.github.piasy.yamvp.dagger2.BaseComponent;
 import com.github.piasy.yamvp.dagger2.YaMvpDiActivity;
 import com.yatatsu.autobundle.AutoBundle;
 import onactivityresult.ActivityResult;
@@ -44,8 +41,7 @@ import onactivityresult.ActivityResult;
  *
  * Base Activity class.
  */
-public abstract class BaseActivity<V extends YaView, P extends YaPresenter<V>, C extends
-        BaseComponent<V, P>> extends YaMvpDiActivity<V, P, C> implements TransactionCommitter {
+public abstract class BaseActivity<C> extends YaMvpDiActivity<C> implements TransactionCommitter {
 
     private final SupportFragmentTransactionDelegate mSupportFragmentTransactionDelegate
             = new SupportFragmentTransactionDelegate();

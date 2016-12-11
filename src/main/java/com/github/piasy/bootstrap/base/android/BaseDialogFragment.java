@@ -49,19 +49,20 @@ import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegat
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
 import com.github.piasy.yamvp.YaPresenter;
 import com.github.piasy.yamvp.YaView;
-import com.github.piasy.yamvp.dagger2.BaseComponent;
 import com.github.piasy.yamvp.dagger2.HasComponent;
 import com.yatatsu.autobundle.AutoBundle;
+import javax.inject.Inject;
 
 /**
  * Created by piasy on 15/5/4.
  */
 @SuppressWarnings({ "PMD.TooManyMethods", "unused" })
-public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter<V>, C extends
-        BaseComponent<V, P>> extends DialogFragment implements TransactionCommitter {
+public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter<V>, C>
+        extends DialogFragment implements TransactionCommitter {
 
     private static final float DEFAULT_DIM_AMOUNT = 0.2F;
 
+    @Inject
     protected P mPresenter;
 
     private final SupportDialogFragmentDismissDelegate mSupportDialogFragmentDismissDelegate
@@ -80,7 +81,6 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
             AutoBundle.bind(this, savedInstanceState);
         }
         final C component = ((HasComponent<C>) getActivity()).getComponent();
-        mPresenter = component.presenter();
         injectDependencies(component);
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
