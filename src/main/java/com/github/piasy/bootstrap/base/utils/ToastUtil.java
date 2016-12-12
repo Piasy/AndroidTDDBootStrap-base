@@ -24,6 +24,7 @@
 
 package com.github.piasy.bootstrap.base.utils;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.StringRes;
 
 /**
@@ -34,6 +35,7 @@ import android.support.annotation.StringRes;
  * framework
  * dependency.
  */
+@AnyThread
 public interface ToastUtil {
 
     /**

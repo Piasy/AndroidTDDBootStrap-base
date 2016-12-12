@@ -25,6 +25,9 @@
 package com.github.piasy.bootstrap.base.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.AnyThread;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
 import javax.inject.Inject;
@@ -36,9 +39,11 @@ import javax.inject.Singleton;
  * Implementation of {@link ToastUtil}, using the Android framework {@link Toast}.
  */
 @Singleton
+@AnyThread
 class ToastUtilImpl implements ToastUtil {
 
     private final Context mContext;
+    private final Handler mMainThreadHandler;
 
     /**
      * Create instance with the app {@link Context}.
@@ -48,25 +53,42 @@ class ToastUtilImpl implements ToastUtil {
     @Inject
     ToastUtilImpl(final Context context) {
         mContext = context;
+        mMainThreadHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     public void toast(final String content) {
-        Toast.makeText(mContext, content, Toast.LENGTH_SHORT).show();
+        doToast(content, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void toast(@StringRes final int contentResId) {
-        Toast.makeText(mContext, contentResId, Toast.LENGTH_SHORT).show();
+        doToast(contentResId, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void longToast(final String content) {
-        Toast.makeText(mContext, content, Toast.LENGTH_LONG).show();
+        doToast(content, Toast.LENGTH_LONG);
     }
 
     @Override
     public void longToast(@StringRes final int contentResId) {
-        Toast.makeText(mContext, contentResId, Toast.LENGTH_LONG).show();
+        doToast(contentResId, Toast.LENGTH_LONG);
+    }
+
+    private void doToast(final String content, final int duration) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(mContext, content, duration).show();
+        } else {
+            mMainThreadHandler.post(() -> Toast.makeText(mContext, content, duration).show());
+        }
+    }
+
+    private void doToast(@StringRes final int contentResId, final int duration) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(mContext, contentResId, duration).show();
+        } else {
+            mMainThreadHandler.post(() -> Toast.makeText(mContext, contentResId, duration).show());
+        }
     }
 }
