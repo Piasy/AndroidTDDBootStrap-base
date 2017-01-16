@@ -34,6 +34,7 @@ import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegat
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
 import com.github.piasy.yamvp.dagger2.YaMvpDiActivity;
 import com.yatatsu.autobundle.AutoBundle;
+import icepick.Icepick;
 import onactivityresult.ActivityResult;
 
 /**
@@ -50,11 +51,8 @@ public abstract class BaseActivity<C> extends YaMvpDiActivity<C> implements Tran
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (savedInstanceState == null) {
-            AutoBundle.bind(this);
-        } else {
-            AutoBundle.bind(this, savedInstanceState);
-        }
+        AutoBundle.bind(this);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         super.onCreate(savedInstanceState);
         mIsResumed = true;
     }
@@ -70,10 +68,9 @@ public abstract class BaseActivity<C> extends YaMvpDiActivity<C> implements Tran
     }
 
     @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        mIsResumed = true;
-        mSupportFragmentTransactionDelegate.onResumed();
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -92,6 +89,13 @@ public abstract class BaseActivity<C> extends YaMvpDiActivity<C> implements Tran
         if (handleActivityResult()) {
             ActivityResult.onResult(requestCode, resultCode, data).into(this);
         }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        mIsResumed = true;
+        mSupportFragmentTransactionDelegate.onResumed();
     }
 
     protected boolean handleActivityResult() {

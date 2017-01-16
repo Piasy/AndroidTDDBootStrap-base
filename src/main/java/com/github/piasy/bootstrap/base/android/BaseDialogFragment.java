@@ -51,6 +51,7 @@ import com.github.piasy.yamvp.YaPresenter;
 import com.github.piasy.yamvp.YaView;
 import com.github.piasy.yamvp.dagger2.HasComponent;
 import com.yatatsu.autobundle.AutoBundle;
+import icepick.Icepick;
 import javax.inject.Inject;
 
 /**
@@ -75,28 +76,37 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (savedInstanceState == null) {
-            AutoBundle.bind(this);
-        } else {
-            AutoBundle.bind(this, savedInstanceState);
-        }
+        AutoBundle.bind(this);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         final C component = ((HasComponent<C>) getActivity()).getComponent();
         injectDependencies(component);
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        return new Dialog(getActivity(), getTheme()) {
-            @Override
-            public void onBackPressed() {
-                if (isCanceledOnBackPressed()) {
-                    super.onBackPressed();
-                }
-            }
-        };
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+            @Nullable final Bundle savedInstanceState) {
+        if (getDialog().getWindow() != null) {
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        getDialog().setCanceledOnTouchOutside(isCanceledOnTouchOutside());
+        return inflater.inflate(getLayoutRes(), container, false);
+    }
+
+    /**
+     * CONTRACT: the new life cycle method {@link #initFields()}, {@link #bindView(View)}
+     * and {@link #startBusiness()} might use other infrastructure initialised in subclass's
+     * onViewCreated, e.g. DI, MVP, so those subclass should do those
+     * infrastructure init job before this method is invoked.
+     */
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initFields();
+        bindView(view);
+        startBusiness();
     }
 
     @Override
@@ -129,41 +139,35 @@ public abstract class BaseDialogFragment<V extends YaView, P extends YaPresenter
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mSupportDialogFragmentDismissDelegate.onResumed(this);
+        mSupportFragmentTransactionDelegate.onResumed();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbindView();
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
-            @Nullable final Bundle savedInstanceState) {
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-        getDialog().setCanceledOnTouchOutside(isCanceledOnTouchOutside());
-        return inflater.inflate(getLayoutRes(), container, false);
-    }
-
-    /**
-     * CONTRACT: the new life cycle method {@link #initFields()}, {@link #bindView(View)}
-     * and {@link #startBusiness()} might use other infrastructure initialised in subclass's
-     * onViewCreated, e.g. DI, MVP, so those subclass should do those
-     * infrastructure init job before this method is invoked.
-     */
-    @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initFields();
-        bindView(view);
-        startBusiness();
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        return new Dialog(getActivity(), getTheme()) {
+            @Override
+            public void onBackPressed() {
+                if (isCanceledOnBackPressed()) {
+                    super.onBackPressed();
+                }
+            }
+        };
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mSupportDialogFragmentDismissDelegate.onResumed(this);
-        mSupportFragmentTransactionDelegate.onResumed();
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     protected final boolean startActivitySafely(final Intent intent) {

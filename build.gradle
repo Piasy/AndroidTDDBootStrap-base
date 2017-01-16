@@ -144,6 +144,7 @@ dependencies {
 
     compile baseDependencies.threetenabp
     compile baseDependencies.autoBundle
+    compile baseDependencies.icepick
     compile(baseDependencies.onActivityResult) {
         exclude module: 'support-annotations'
     }
@@ -158,7 +159,8 @@ dependencies {
         exclude module: 'jsr305'
     }
 
-    provided aptDependencies.autoValue
+    provided aptDependencies.autoValue // for ide
+    annotationProcessor aptDependencies.autoValue // for okbuck
     annotationProcessor aptDependencies.daggerApt
     annotationProcessor aptDependencies.autoParcelApt
     retrolambdaConfig aptDependencies.retrolambda

@@ -42,6 +42,7 @@ import com.github.piasy.yamvp.YaPresenter;
 import com.github.piasy.yamvp.YaView;
 import com.github.piasy.yamvp.dagger2.YaMvpDiFragment;
 import com.yatatsu.autobundle.AutoBundle;
+import icepick.Icepick;
 import onactivityresult.ActivityResult;
 
 /**
@@ -61,31 +62,9 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         // inject argument first
-        if (savedInstanceState == null) {
-            AutoBundle.bind(this);
-        } else {
-            AutoBundle.bind(this, savedInstanceState);
-        }
+        AutoBundle.bind(this);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public boolean isCommitterResumed() {
-        return isResumed();
-    }
-
-    protected final boolean startActivitySafely(final Intent intent) {
-        return StartActivityDelegate.startActivitySafely(this, intent);
-    }
-
-    protected final boolean startActivityForResultSafely(final Intent intent, final int code) {
-        return StartActivityDelegate.startActivityForResultSafely(this, intent, code);
-    }
-
-    @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ActivityResult.onResult(requestCode, resultCode, data).into(this);
     }
 
     @Override
@@ -119,6 +98,32 @@ public abstract class BaseFragment<V extends YaView, P extends YaPresenter<V>, C
     public void onDestroyView() {
         super.onDestroyView();
         unbindView();
+    }
+
+    @Override
+    public boolean isCommitterResumed() {
+        return isResumed();
+    }
+
+    protected final boolean startActivitySafely(final Intent intent) {
+        return StartActivityDelegate.startActivitySafely(this, intent);
+    }
+
+    protected final boolean startActivityForResultSafely(final Intent intent, final int code) {
+        return StartActivityDelegate.startActivityForResultSafely(this, intent, code);
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ActivityResult.onResult(requestCode, resultCode, data).into(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Icepick.saveInstanceState(this, outState);
     }
 
     protected boolean safeCommit(@NonNull final FragmentTransaction transaction) {
