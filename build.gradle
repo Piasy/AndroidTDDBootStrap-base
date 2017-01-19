@@ -27,7 +27,7 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'com.ofg.uptodate'
 apply plugin: 'net.ltgt.errorprone'
-apply from: '../AndroidCodeQualityConfig/quality.gradle'
+apply from: "$rootProject.projectDir/AndroidCodeQualityConfig/quality.gradle"
 
 def isTravis = "true".equals(System.getenv("TRAVIS"))
 
@@ -72,10 +72,6 @@ unMock {
 }
 
 dependencies {
-    def baseDependencies = rootProject.ext.baseDependencies
-    def aptDependencies = rootProject.ext.aptDependencies
-    def testDependencies = rootProject.ext.testDependencies
-
     compile baseDependencies.androidSupportAppCompatV7
     compile(baseDependencies.safelyAndroid) {
         exclude module: 'appcompat-v7'
