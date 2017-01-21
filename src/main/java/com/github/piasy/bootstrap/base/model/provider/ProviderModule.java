@@ -28,6 +28,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.github.piasy.bootstrap.base.model.jsr310.ZonedDateTimeJsonConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapterFactory;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.moczul.ok2curl.CurlInterceptor;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -35,6 +36,7 @@ import com.squareup.sqlbrite.SqlBrite;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
+import java.util.Set;
 import javax.inject.Singleton;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -61,12 +63,13 @@ public class ProviderModule {
                 .build();
     }
 
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @Singleton
     @Provides
-    Gson provideGson(final GsonConfig config) {
+    Gson provideGson(final GsonConfig config, final Set<TypeAdapterFactory> factories) {
         final GsonBuilder builder = new GsonBuilder();
-        if (config.autoGsonTypeAdapterFactory() != null) {
-            builder.registerTypeAdapterFactory(config.autoGsonTypeAdapterFactory());
+        for (final TypeAdapterFactory factory : factories) {
+            builder.registerTypeAdapterFactory(factory);
         }
         return builder.registerTypeAdapter(ZonedDateTime.class,
                 new ZonedDateTimeJsonConverter(config.dateTimeFormatter()))

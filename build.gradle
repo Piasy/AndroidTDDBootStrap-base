@@ -163,8 +163,4 @@ dependencies {
     errorprone aptDependencies.errorprone
 
     testCompile project(':testbase')
-    testCompile(testDependencies.junit) {
-        exclude module: 'hamcrest-core'
-    }
-    testCompile testDependencies.mockito
 }
