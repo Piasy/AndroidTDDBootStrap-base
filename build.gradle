@@ -29,7 +29,7 @@ apply plugin: 'com.ofg.uptodate'
 apply plugin: 'net.ltgt.errorprone'
 apply from: "$rootProject.projectDir/AndroidCodeQualityConfig/quality.gradle"
 
-def isTravis = "true".equals(System.getenv("TRAVIS"))
+def isTravis = "true" == System.getenv("TRAVIS")
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
@@ -73,87 +73,49 @@ unMock {
 
 dependencies {
     compile baseDependencies.androidSupportAppCompatV7
-    compile(baseDependencies.safelyAndroid) {
-        exclude module: 'appcompat-v7'
-    }
+    compile baseDependencies.safelyAndroid
 
     compile baseDependencies.recyclerViewV7
-    compile(baseDependencies.mugen) {
-        exclude module: 'support-v4'
-        exclude module: 'recyclerview-v7'
-    }
+    compile baseDependencies.mugen
+
+    compile baseDependencies.multiDex
 
     compile baseDependencies.javaxAnnotation
 
     compile baseDependencies.rxJava2
-    compile(baseDependencies.rxAndroid2) {
-        exclude module: 'rxjava'
-    }
+    compile baseDependencies.rxAndroid2
     compile baseDependencies.rxJava2Interop
 
-    compile(baseDependencies.yaMvpDagger2) {
-        exclude module: 'support-fragment'
-        exclude module: 'appcompat-v7'
-        exclude module: 'dagger'
-    }
-    compile(baseDependencies.yaMvpRx) {
-        exclude module: 'rxjava'
-        exclude module: 'jsr305'
-        exclude module: 'support-annotations'
-    }
+    compile baseDependencies.yaMvpDagger2
+    compile baseDependencies.yaMvpRx
 
     // this should be removed after belows update
     compile baseDependencies.rxJava
-    compile(baseDependencies.rxAndroid) {
-        exclude module: 'rxjava'
-    }
-    compile(baseDependencies.rxBindingAppCompatV7) {
-        exclude module: 'rxjava'
-        exclude module: 'rxandroid'
-        exclude module: 'appcompat-v7'
-        exclude module: 'support-annotations'
-    }
+    compile baseDependencies.rxAndroid
+    compile baseDependencies.rxBindingAppCompatV7
     compile baseDependencies.eventBus
     compile baseDependencies.dagger
-    compile(baseDependencies.butterKnife) {
-        exclude module: 'support-annotations'
-    }
-    compile(baseDependencies.sqlDelightRuntime) {
-        exclude module: 'support-annotations'
-    }
+    compile baseDependencies.butterKnife
+    compile baseDependencies.sqlDelightRuntime
 
     compile baseDependencies.gson
     compile baseDependencies.okHttp
-    compile(baseDependencies.retrofit) {
-        exclude module: 'okhttp'
-    }
-    compile(baseDependencies.retrofitGsonConverter) {
-        exclude module: 'gson'
-    }
-    compile(baseDependencies.retrofitRxJava2Adapter) {
-        exclude module: 'rxjava'
-    }
-    compile(baseDependencies.sqlBrite) {
-        exclude module: 'support-annotations'
-        exclude module: 'rxjava'
-    }
+    compile baseDependencies.retrofit
+    compile baseDependencies.retrofitGsonConverter
+    compile baseDependencies.retrofitRxJava2Adapter
+
+    compile baseDependencies.sqlBrite
+    compile baseDependencies.rxPreferences
 
     compile baseDependencies.threetenabp
     compile baseDependencies.autoBundle
     compile baseDependencies.icepick
-    compile(baseDependencies.onActivityResult) {
-        exclude module: 'support-annotations'
-    }
+    compile baseDependencies.onActivityResult
 
     compile baseDependencies.timber
     compile baseDependencies.okHttpLogging
-    compile(baseDependencies.ok2Curl) {
-        exclude module: 'okhttp'
-    }
-    compile(baseDependencies.stethoOkhttp) {
-        exclude module: 'okhttp'
-        exclude module: 'jsr305'
-    }
+    compile baseDependencies.ok2Curl
+    compile baseDependencies.stethoOkhttp
 
     provided aptDependencies.autoValue // for ide
     annotationProcessor aptDependencies.autoValue // for okbuck

@@ -24,6 +24,8 @@
 
 package com.github.piasy.bootstrap.base.model.provider;
 
+import android.content.Context;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.github.piasy.bootstrap.base.model.jsr310.ZonedDateTimeJsonConverter;
 import com.google.gson.Gson;
@@ -117,5 +119,13 @@ public class ProviderModule {
                 .wrapDatabaseHelper(config.sqliteOpenHelper(), rx.schedulers.Schedulers.io());
         briteDb.setLoggingEnabled(config.enableLogging());
         return briteDb;
+    }
+
+    @Singleton
+    @Provides
+    RxSharedPreferences provideRxSharedPreferences(final Context context,
+            final SharedPreferenceConfig config) {
+        return RxSharedPreferences.create(
+                context.getSharedPreferences(config.name(), config.mode()));
     }
 }

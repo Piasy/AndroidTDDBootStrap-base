@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
-import com.github.piasy.bootstrap.base.di.ActivityModule;
 import com.github.piasy.safelyandroid.activity.StartActivityDelegate;
 import com.github.piasy.safelyandroid.fragment.SupportFragmentTransactionDelegate;
 import com.github.piasy.safelyandroid.fragment.TransactionCommitter;
@@ -100,9 +99,5 @@ public abstract class BaseActivity<C> extends YaMvpDiActivity<C> implements Tran
 
     protected boolean handleActivityResult() {
         return false;
-    }
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
     }
 }

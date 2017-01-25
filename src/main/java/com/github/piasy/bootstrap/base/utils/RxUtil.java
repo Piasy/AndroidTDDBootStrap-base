@@ -24,6 +24,7 @@
 
 package com.github.piasy.bootstrap.base.utils;
 
+import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
@@ -38,5 +39,14 @@ public final class RxUtil {
 
     private RxUtil() {
         // no instance
+    }
+
+    public static <T> Observable<T> repoGet(final Observable<T> cache, final Observable<T> remote,
+            final boolean refresh) {
+        if (refresh) {
+            return Observable.concat(cache, remote);
+        }
+        return Observable.concat(cache, remote)
+                .take(1);
     }
 }
