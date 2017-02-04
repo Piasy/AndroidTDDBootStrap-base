@@ -74,6 +74,7 @@ unMock {
 dependencies {
     compile baseDependencies.androidSupportAppCompatV7
     compile baseDependencies.safelyAndroid
+    compile baseDependencies.router
 
     compile baseDependencies.recyclerViewV7
     compile baseDependencies.mugen

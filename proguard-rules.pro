@@ -142,3 +142,7 @@
     @icepick.* <fields>;
 }
 -keepnames class * { @icepick.State *;}
+
+
+# Router
+-keep class **RouteTable { *; }
