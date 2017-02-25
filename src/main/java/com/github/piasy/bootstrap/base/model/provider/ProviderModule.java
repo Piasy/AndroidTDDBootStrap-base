@@ -25,13 +25,13 @@
 package com.github.piasy.bootstrap.base.model.provider;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.github.piasy.bootstrap.base.model.jsr310.ZonedDateTimeJsonConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.moczul.ok2curl.CurlInterceptor;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
@@ -45,6 +45,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.greenrobot.eventbus.EventBus;
 import org.threeten.bp.ZonedDateTime;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
@@ -123,9 +124,14 @@ public class ProviderModule {
 
     @Singleton
     @Provides
-    RxSharedPreferences provideRxSharedPreferences(final Context context,
+    SharedPreferences provideSharedPreferences(final Context context,
             final SharedPreferenceConfig config) {
-        return RxSharedPreferences.create(
-                context.getSharedPreferences(config.name(), config.mode()));
+        return context.getSharedPreferences(config.name(), config.mode());
+    }
+
+    @Singleton
+    @Provides
+    RxSharedPreferences provideRxSharedPreferences(final SharedPreferences preferences) {
+        return RxSharedPreferences.create(preferences);
     }
 }
