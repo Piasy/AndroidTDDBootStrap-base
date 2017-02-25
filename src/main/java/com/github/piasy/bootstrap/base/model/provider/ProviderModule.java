@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.github.piasy.bootstrap.base.model.jsr310.ZonedDateTimeJsonConverter;
+import com.github.piasy.bootstrap.base.model.net.AuthInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
@@ -95,8 +96,11 @@ public class ProviderModule {
 
     @Singleton
     @Provides
-    OkHttpClient provideHttpClient(final HttpClientConfig config) {
-        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    OkHttpClient provideHttpClient(final HttpClientConfig config,
+            final AuthInterceptor authInterceptor) {
+        final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor);
+
         if (config.enableLog()) {
             builder.addNetworkInterceptor(new StethoInterceptor())
                     .addInterceptor(new HttpLoggingInterceptor(
